@@ -157,4 +157,58 @@ function delete()
         return false;
     }
 }
+public function search($search_term, $from_record_num, $records_per_page)
+{
+    // запрос к БД
+    $query = "SELECT
+            id, fio, birth, category , speciality 
+        FROM
+            " . $this->table_name . " 
+          
+        WHERE
+            fio LIKE ? 
+        ORDER BY
+            fio ASC
+        LIMIT
+            ?, ?";
+
+    // подготавливаем запрос
+    $stmt = $this->conn->prepare($query);
+
+    // привязываем значения переменных
+    $search_term = "%{$search_term}%";
+    $stmt->bindParam(1, $search_term);
+    $stmt->bindParam(2, $from_record_num, PDO::PARAM_INT);
+    $stmt->bindParam(3, $records_per_page, PDO::PARAM_INT);
+
+    // выполняем запрос
+    $stmt->execute();
+
+    // возвращаем значения из БД
+    return $stmt;
+}
+
+// метод для подсчёта общего количества строк
+public function countAll_BySearch($search_term)
+{
+    // запрос
+    $query = "SELECT
+            COUNT(*) as total_rows
+        FROM
+            " . $this->table_name . " d 
+        WHERE
+            d.fio LIKE ?";
+
+    // подготовка запроса
+    $stmt = $this->conn->prepare($query);
+
+    // привязка значений
+    $search_term = "%{$search_term}%";
+    $stmt->bindParam(1, $search_term);
+
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row["total_rows"];
+}
 }

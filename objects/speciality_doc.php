@@ -31,7 +31,7 @@ class Speciality_doc
 
         return $stmt;
     }
-    // получение названия категории по её ID
+    // получение названия специальности по её ID
 function readSpeciality()
 {
     // запрос MySQL
@@ -45,6 +45,5 @@ function readSpeciality()
 
     $this->speciality = $row["speciality"];
 }
-
 
 }
