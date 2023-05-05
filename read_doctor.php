@@ -65,6 +65,12 @@ require_once "layout_header.php";
             ?>
         </td>
     </tr>
+    <tr>
+    <td>Фото</td>
+    <td>
+        <?= $doctor->image ? "<img src='img/{$doctor->image}' style='width:300px;' />" : "Изображение не найдено."; ?>
+    </td>
+    </tr>
 </table>
 <?php // подвал
 require_once "layout_footer.php";

@@ -13,6 +13,7 @@ class Doctor
     public $category;
     public $speciality;
     public $birth;
+    public $image;
     
 
     public function __construct($db)
@@ -27,7 +28,7 @@ class Doctor
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    fio=:fio, category=:category, speciality=:speciality, birth=:birth";
+                    fio=:fio, category=:category, speciality=:speciality, image=:image,birth=:birth";
 
         $stmt = $this->conn->prepare($query);
 
@@ -36,12 +37,14 @@ class Doctor
         $this->category = htmlspecialchars(strip_tags($this->category));
         $this->speciality = htmlspecialchars(strip_tags($this->speciality));
         $this->birth = htmlspecialchars(strip_tags($this->birth));
+        $this->image = htmlspecialchars(strip_tags($this->image));
 
         // привязываем значения
         $stmt->bindParam(":fio", $this->fio);
         $stmt->bindParam(":birth", $this->birth);
         $stmt->bindParam(":category", $this->category);
         $stmt->bindParam(":speciality", $this->speciality);
+        $stmt->bindParam(":image", $this->image);
 
         if ($stmt->execute()) {
             return true;
@@ -85,7 +88,7 @@ function readOne()
 {
     // запрос MySQL
     $query = "SELECT
-                fio, birth, category, speciality
+                fio, birth, category, speciality, image
             FROM
                 " . $this->table_name . "
             WHERE
@@ -103,6 +106,7 @@ function readOne()
     $this->birth = $row["birth"];
     $this->category = $row["category"];
     $this->speciality = $row["speciality"];
+    $this->image = $row["image"];
 }
 // метод для обновления товара
 function update()
@@ -211,4 +215,77 @@ public function countAll_BySearch($search_term)
 
     return $row["total_rows"];
 }
+// загрузка файла изображения на сервер
+function uploadPhoto()
+{
+    $result_message = "";
+
+    // если изображение не пустое, пробуем загрузить его
+    if ($this->image) {
+
+        // функция sha1_file() используется для создания уникального имени файла
+        $target_directory = "img/";
+        $target_file = $target_directory . $this->image;
+        $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+
+        // сообщение об ошибке пусто
+        $file_upload_error_messages = "";
+        // убеждаемся, что файл - изображение
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+
+        if ($check !== false) {
+            // отправленный файл является изображением
+        } else {
+            $file_upload_error_messages .= "<div>Отправленный файл не является изображением.</div>";
+        }
+
+        // проверяем, разрешены ли определенные типы файлов
+        $allowed_file_types = array("jpg", "jpeg", "png", "gif");
+
+        if (!in_array($file_type, $allowed_file_types)) {
+            $file_upload_error_messages .= "<div>Разрешены только файлы JPG, JPEG, PNG, GIF.</div>";
+        }
+
+        // убеждаемся, что файл не существует
+        if (file_exists($target_file)) {
+            $file_upload_error_messages .= "<div>Изображение уже существует. Попробуйте изменить имя файла.</div>";
+        }
+
+        // убедимся, что отправленный файл не слишком большой (не может быть больше 1 МБ)
+        if ($_FILES["image"]["size"] > (2048000)) {
+            $file_upload_error_messages .= "<div>Размер изображения не должен превышать 2 МБ.</div>";
+        }
+
+        // убедимся, что папка uploads существует, если нет, то создаём
+        if (!is_dir($target_directory)) {
+            mkdir($target_directory, 0777, true);
+        }
+        // если $file_upload_error_messages всё ещё пуст
+        if (empty($file_upload_error_messages)) {
+
+            // ошибок нет, пробуем загрузить файл
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                // фото загружено
+            } else {
+                $result_message .= "<div class='alert alert-danger'>";
+                    $result_message .= "<div>Невозможно загрузить фото.</div>";
+                    $result_message .= "<div>Обновите запись, чтобы загрузить фото снова.</div>";
+                $result_message .= "</div>";
+            }
+        }
+
+        // если $file_upload_error_messages НЕ пусто
+        else {
+
+            // это означает, что есть ошибки, поэтому покажем их пользователю
+            $result_message .= "<div class='alert alert-danger'>";
+                $result_message .= "{$file_upload_error_messages}";
+                $result_message .= "<div>Обновите запись, чтобы загрузить фото.</div>";
+            $result_message .= "</div>";
+        }
+    }
+
+    return $result_message;
+}
+
 }
