@@ -15,8 +15,8 @@ echo "</form>";
 
 // кнопка просмотра врачей
 echo "<div class='right-button-margin'>";
-echo "<a href='index.php' class='btn btn-primary pull-right'>";
-echo "<span class='glyphicon glyphicon-plus'></span>Просмотр  врачей";
+echo "<a href='create_doctor.php' class='btn btn-primary pull-right'>";
+echo "<span class='glyphicon glyphicon-plus'></span>Добавить  врача";
 echo "</a>";
 echo "</div>";
 
