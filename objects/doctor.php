@@ -13,6 +13,7 @@ class Doctor
     public $category;
     public $speciality;
     public $birth;
+    public $image;
     
 
     public function __construct($db)
@@ -27,7 +28,7 @@ class Doctor
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    fio=:fio, category=:category, speciality=:speciality, birth=:birth";
+                    fio=:fio, category=:category, speciality=:speciality, image=:image,birth=:birth";
 
         $stmt = $this->conn->prepare($query);
 
@@ -36,12 +37,14 @@ class Doctor
         $this->category = htmlspecialchars(strip_tags($this->category));
         $this->speciality = htmlspecialchars(strip_tags($this->speciality));
         $this->birth = htmlspecialchars(strip_tags($this->birth));
+        $this->image = htmlspecialchars(strip_tags($this->image));
 
         // привязываем значения
         $stmt->bindParam(":fio", $this->fio);
         $stmt->bindParam(":birth", $this->birth);
         $stmt->bindParam(":category", $this->category);
         $stmt->bindParam(":speciality", $this->speciality);
+        $stmt->bindParam(":image", $this->image);
 
         if ($stmt->execute()) {
             return true;

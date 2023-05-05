@@ -32,6 +32,9 @@ if ($_POST)
     $doctor->birth = $_POST["birth"];
     $doctor->category = $_POST["category_id"];
     $doctor->speciality = $_POST["speciality_id"];
+    $image = !empty($_FILES["image"]["name"])
+    ? sha1_file($_FILES["image"]["tmp_name"]) . "-" . basename($_FILES["image"]["name"]) : "";
+    $doctor->image = $image;
 
     // создание врача
     if ($doctor->create()) {
@@ -46,7 +49,8 @@ if ($_POST)
 ?>
 
 <!-- HTML-формы для создания врача -->
-<form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+<form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post"
+enctype="multipart/form-data">
   
     <table class="table table-hover table-responsive table-bordered">
   
@@ -101,7 +105,11 @@ echo "</select>";
 ?>
             </td>
         </tr>
-  
+        
+        <tr>
+<td>Изображение</td>
+<td><input type="file" name="image" /></td>
+</tr>
         <tr>
             <td></td>
             <td>
