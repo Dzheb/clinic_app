@@ -219,13 +219,11 @@ public function countAll_BySearch($search_term)
 function uploadPhoto()
 {
     $result_message = "";
-
     // если изображение не пустое, пробуем загрузить его
     if ($this->image) {
 
         // функция sha1_file() используется для создания уникального имени файла
-        $target_directory = "img/";
-        $target_file = $target_directory . $this->image;
+        $target_file = IMG_DOCTORS. $this->image;
         $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
 
         // сообщение об ошибке пусто
@@ -257,8 +255,8 @@ function uploadPhoto()
         }
 
         // убедимся, что папка uploads существует, если нет, то создаём
-        if (!is_dir($target_directory)) {
-            mkdir($target_directory, 0777, true);
+        if (!is_dir(IMG_DOCTORS)) {
+            mkdir(IMG_DOCTORS, 0777, true);
         }
         // если $file_upload_error_messages всё ещё пуст
         if (empty($file_upload_error_messages)) {

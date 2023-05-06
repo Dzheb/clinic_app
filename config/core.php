@@ -8,3 +8,6 @@ $records_per_page = 5;
 
 // вычисление лимита запроса
 $from_record_num = ($records_per_page * $page) - $records_per_page;
+define("IMG_DOCTORS", "img/doctors/");
+
+

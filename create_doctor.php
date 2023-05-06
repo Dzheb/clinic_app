@@ -1,6 +1,7 @@
 <?php
 // подключим файлы, необходимые для подключения к базе данных и файлы с объектами
 include_once "config/database.php";
+include_once "config/core.php";
 include_once "objects/doctor.php";
 include_once "objects/category_doc.php";
 include_once "objects/speciality_doc.php";

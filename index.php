@@ -9,7 +9,6 @@ include_once "objects/doctor.php";
 include_once "objects/category_doc.php";
 include_once "objects/speciality_doc.php";
 
-
 // получение соединения с БД
 $database = new Database();
 $db = $database->getConnection();
