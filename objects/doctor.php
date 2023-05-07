@@ -118,7 +118,8 @@ function update()
                 fio = :fio,
                 birth = :birth,
                 category  = :category,
-                speciality = :speciality
+                speciality = :speciality,
+                image = :image
             WHERE
                 id = :id";
 
@@ -130,6 +131,7 @@ function update()
     $this->birth = htmlspecialchars(strip_tags($this->birth));
     $this->category = htmlspecialchars(strip_tags($this->category));
     $this->speciality = htmlspecialchars(strip_tags($this->speciality));
+    $this->image = htmlspecialchars(strip_tags($this->image));
     $this->id = htmlspecialchars(strip_tags($this->id));
 
     // привязка значений
@@ -137,6 +139,7 @@ function update()
     $stmt->bindParam(":birth", $this->birth);
     $stmt->bindParam(":category", $this->category);
     $stmt->bindParam(":speciality", $this->speciality);
+    $stmt->bindParam(":image", $this->image);
     $stmt->bindParam(":id", $this->id);
 
     // выполняем запрос
@@ -223,7 +226,7 @@ function uploadPhoto()
     if ($this->image) {
 
         // функция sha1_file() используется для создания уникального имени файла
-        $target_file = IMG_DOCTORS. $this->image;
+        $target_file = IMG_DOCTORS.$this->image;
         $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
 
         // сообщение об ошибке пусто
