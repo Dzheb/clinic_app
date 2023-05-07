@@ -4,6 +4,7 @@ $id = isset($_GET["id"]) ? $_GET["id"] : die("ERROR: отсутствует ID."
 
 // подключаем файлы для работы с базой данных и файлы с объектами
 include_once "config/database.php";
+include_once "config/core.php";
 include_once "objects/doctor.php";
 include_once "objects/category_doc.php";
 include_once "objects/speciality_doc.php";
@@ -68,7 +69,7 @@ require_once "layout_header.php";
     <tr>
     <td>Фото</td>
     <td>
-        <?= $doctor->image ? "<img src='img/{$doctor->image}' style='width:300px;' />" : "Изображение не найдено."; ?>
+        <?=  $doctor->image ? "<img src=".IMG_DOCTORS.$doctor->image." style='width:300px;' />" : "Изображение не найдено."; ?>
     </td>
     </tr>
 </table>

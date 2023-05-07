@@ -6,6 +6,7 @@ $id = isset($_GET["id"]) ? $_GET["id"] : die("ERROR: отсутствует ID."
 // подключаем файлы для работы с базой данных и файлы с объектами
 include_once "config/database.php";
 include_once "objects/doctor.php";
+include_once "config/core.php";
 include_once "objects/category_doc.php";
 include_once "objects/speciality_doc.php";
 
@@ -35,23 +36,26 @@ include_once "layout_header.php";
     <a href="index.php" class="btn btn-default pull-right">Просмотр всех врачей</a>
 </div>
 
-<!-- здесь будет форма обновления товара -->
-<!-- здесь будет контент -->
+<!-- здесь будет форма обновления  -->
 <?php
 // если форма была отправлена (submit)
 if ($_POST) {
 
-    // устанавливаем значения свойствам товара
+    // устанавливаем значения 
     $doctor->fio = $_POST["fio"];
     $doctor->birth = $_POST["birth"];
     $doctor->category = $_POST["category_id"];
     $doctor->speciality = $_POST["speciality_id"];
+    $image = !empty($_FILES["image"]["name"])
+    ? sha1_file($_FILES["image"]["tmp_name"]) . "-" . basename($_FILES["image"]["name"]) : "";
+    $doctor->image = $image;
 
     // обновление информации по врачу
     if ($doctor->update()) {
         echo "<div class='alert alert-success alert-dismissable'>";
         echo "Информация о враче  обновлёна.";
         echo "</div>";
+        echo $doctor->uploadPhoto();
     }
 
     // если не удается обновить, сообщим об этом пользователю
@@ -63,7 +67,8 @@ if ($_POST) {
 }
 ?>
 <!-- HTML-формы для создания врача -->
-<form action="<?= htmlspecialchars($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post">
+<form action="<?= htmlspecialchars($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post"
+enctype="multipart/form-data">
     <table class="table table-hover table-responsive table-bordered">
   
         <tr>
@@ -132,8 +137,12 @@ echo "</select>";
 ?>
             </td>
         </tr>
-  
         <tr>
+<td>Изображение</td>
+<td><input type="file" name="image" /></td>
+</tr>
+        <tr>
+
             <td></td>
             <td>
                 <button type="submit" class="btn btn-primary">Внести</button>
